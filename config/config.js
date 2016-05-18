@@ -28,7 +28,7 @@ var config = {
     localMode: false,
     markdownCssFile: 'gh-themed.css',
     remoteRoot: 'https://raw.githubusercontent.com/skijit/Notes/master/',
-    localRoot: 'C:/GitWorkspace/Notes/',
+    localRoot: 'UNKNOWN',
     port: process.env.PORT || 3000
   },
 
