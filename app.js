@@ -1,4 +1,3 @@
-//this comment is for a git / deployment test- please ignore
 
 var express = require('express');
 var path = require('path');
