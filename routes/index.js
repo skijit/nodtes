@@ -14,7 +14,13 @@ router.get('/', function(req, res) {
 //main content files route
 router.get(/\/.+/, function(req, res, next) {
     if (config.localMode === true) {
-        var fileName = config.localRoot.replace(/\/$/,'') + req.url + '.md';
+        var fileName = '';
+        if (req.url.match(/^\/journal\//)) {
+            fileName = config.localRoot.replace(/\/$/,'') + req.url + '.md';
+        } else {
+            fileName = config.localRoot.replace(/\/$/,'') + '/notes' + req.url + '.md';
+        }
+         
         var mdFileData = fs.readFileSync(fileName, "utf-8");
         res.render('index', {   content: markdown.process(mdFileData), 
                                 title: extractTitleFromRequest(req.url), 
