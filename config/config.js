@@ -13,7 +13,7 @@ var config = {
     },
     layoutFile: 'main',
     localMode: true,
-    markdownCssFile: 'gh-themed.css',
+    markdownCssFile: 'vs-code-theme/combined.css',
     remoteRoot: 'https://raw.githubusercontent.com/skijit/notes/master/',
     localRoot: 'C:/GitWorkspace/',
     port: process.env.PORT || 3000
@@ -26,7 +26,7 @@ var config = {
     },
     layoutFile: 'main',
     localMode: true,
-    markdownCssFile: 'gh-themed.css',
+    markdownCssFile: 'vs-code-theme/combined.css',
     remoteRoot: 'https://raw.githubusercontent.com/skijit/notes/master/',
     localRoot: '/Users/tomskjei/Documents/GitWorkspace/',
     port: process.env.PORT || 3000
@@ -39,7 +39,7 @@ var config = {
     },
     layoutFile: 'main',
     localMode: false,
-    markdownCssFile: 'gh-themed.css',
+    markdownCssFile: 'vs-code-theme/combined.css',
     remoteRoot: 'https://raw.githubusercontent.com/skijit/notes/master/',
     localRoot: 'C:/GitWorkspace/',
     port: process.env.PORT || 3000
@@ -52,7 +52,7 @@ var config = {
     },
     layoutFile: 'main',
     localMode: false,
-    markdownCssFile: 'gh-themed.css',
+    markdownCssFile: 'vs-code-theme/combined.css',
     remoteRoot: 'https://raw.githubusercontent.com/skijit/notes/master/',
     localRoot: 'C:/GitWorkspace/',
     port: process.env.PORT || 3000
