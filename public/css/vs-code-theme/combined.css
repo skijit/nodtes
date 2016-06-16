@@ -134,7 +134,7 @@ img {
     border: 0;
     max-width: 100%;
     display: block;
-    max-height: 50vh;
+    /* max-height: 50vh; */
 }
 table {
     border-collapse: collapse;

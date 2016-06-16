@@ -40,7 +40,7 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 
 //Resources can be returned locally (via static) or remotely (via redirect)
-if (config.useLocalMode === true) {
+if (config.localMode === true) {
     app.use('/resources', express.static(config.localRoot+'notes/resources'));
 } else {
     app.get(/^\/resources\/.+/i, function(req, res) {
