@@ -27,7 +27,7 @@ a:active {
 p {
     margin: 0;
 }
-p:not(:first-child) {
+p:not(:first-of-type) {
     margin-top: 1rem;
 }
 h1,
@@ -39,7 +39,7 @@ h6 {
     font-weight: normal;
     color: #111;
     line-height: 1.2;
-    margin: 1em 0 0.6em;
+    margin: 1em 0 0.2em;
     text-decoration: none;
 }
 h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor { text-decoration: none; }
@@ -78,12 +78,12 @@ h6 {
     font-size: 0.9rem;
 }
 blockquote {
-    margin: 0 0 0 0.25rem;
+    margin: 0 0 0.6rem 0.25rem;
     padding-left: 0.65rem;
     border-left: 0.25rem solid #007acc;
     background: rgba(127, 127, 127, 0.1);
 }
-blockquote:not(:first-child) {
+blockquote:not(:first-of-type) {
     margin-top: 1rem;
 }
 hr {
@@ -93,7 +93,7 @@ hr {
     border-bottom: 2px solid rgba(0, 0, 0, 0.18);
     margin: 0;
 }
-hr:not(:first-child) {
+hr:not(:first-of-type) {
     margin-top: 1rem;
 }
 b,
@@ -126,9 +126,9 @@ ol {
     padding: 0 0 0 2rem;
     margin: 0;
 }
-ul:not(:first-child),
-ol:not(:first-child) {
-    margin-top: 1rem;
+ul:not(:first-of-type),
+ol:not(:first-of-type) {
+    margin-top: 0.5rem;
 }
 img {
     border: 0;
@@ -139,7 +139,7 @@ img {
 table {
     border-collapse: collapse;
 }
-table:not(:first-child) {
+table:not(:first-of-type) {
     margin-top: 1rem;
 }
 table > thead {
@@ -169,9 +169,9 @@ code {
 }
 pre {
     white-space: pre;
-    margin: 0;
+    margin: 0 0 0.6rem 0;
 }
-pre:not(:first-child) {
+pre:not(:first-of-type) {
     margin-top: 1rem;
 }
 pre > code {
@@ -225,7 +225,7 @@ body > .vs-dark {
     border-color: rgba(255, 255, 255, 0.18);
 }
 
-/* High Contrast: Black */
+/* High Contrast: Black 
 
 body > .hc-black,
 .hc-black h1,
@@ -254,3 +254,4 @@ body > .hc-black,
 .hc-black blockquote {
     border-bottom: 1px solid #fff;
 }
+*/

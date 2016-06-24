@@ -21,10 +21,22 @@ router.get(/\/.+/, function(req, res, next) {
             fileName = config.localRoot.replace(/\/$/,'') + '/notes' + req.url + '.md';
         }
          
-        var mdFileData = fs.readFileSync(fileName, "utf-8");
-        res.render('index', {   content: markdown.process(mdFileData), 
-                                title: extractTitleFromRequest(req.url), 
-                                cssTheme: config.markdownCssFile});
+        var mdFileData = '';
+        var bMDFileExists = true;
+        try {
+            mdFileData = fs.readFileSync(fileName, "utf-8");
+        } catch (e) {
+          bMDFileExists = false;
+        }
+        if (!bMDFileExists) {
+            var err = new Error('Not Found');
+            err.status = 404;
+            next(err);
+        } else {
+            res.render('index', {   content: markdown.process(mdFileData), 
+                                    title: extractTitleFromRequest(req.url), 
+                                    cssTheme: config.markdownCssFile});
+        }
     } else {
         var fileName = config.remoteRoot + req.url + '.md';
         request(fileName, function (error, response, body) {

@@ -17,7 +17,7 @@ markdown.renderer.heading = function (text, level) {
 };
 
 markdown.renderer.code = function(code, language)  {
-    language = language.replace(/[()]/g,'');
+    if (language) { language = language.replace(/[()]/g,''); }
     // Check whether the given language is valid for highlight.js.
     const validLang = !!(language && highlightjs.getLanguage(language));
     // Highlight only if the language is valid.
