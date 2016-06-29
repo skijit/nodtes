@@ -12,7 +12,7 @@ var config = {
       name: 'nodtes'
     },
     layoutFile: 'main',
-    localMode: true,
+    localMode: false,
     markdownCssFile: 'vs-code-theme/combined.css',
     remoteRoot: 'https://raw.githubusercontent.com/skijit/notes/master/',
     localRoot: 'C:/GitWorkspace/',

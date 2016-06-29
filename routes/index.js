@@ -14,40 +14,59 @@ router.get('/', function(req, res) {
 //main content files route
 router.get(/\/.+/, function(req, res, next) {
     if (config.localMode === true) {
-        var fileName = '';
+        var mdFileName = '', indexMdFileName = '';
         if (req.url.match(/^\/journal\//)) {
-            fileName = config.localRoot.replace(/\/$/,'') + req.url + '.md';
+            mdFileName = config.localRoot.replace(/\/$/,'') + req.url + '.md';
+            indexMdFileName = config.localRoot.replace(/\/$/,'') + req.url.replace(/\/$/,'') + '/index.md';
         } else {
-            fileName = config.localRoot.replace(/\/$/,'') + '/notes' + req.url + '.md';
+            mdFileName = config.localRoot.replace(/\/$/,'') + '/notes' + req.url + '.md';
+            indexMdFileName = config.localRoot.replace(/\/$/,'') + '/notes' + req.url.replace(/\/$/,'') + '/index.md';
         }
-         
-        var mdFileData = '';
-        var bMDFileExists = true;
+        console.log(mdFileName);
+        console.log(indexMdFileName);
+        var mdFileData = '', indexMdFileData = '';
+        var bMdFileExists = true, bIndexMdFileExists = true;
         try {
-            mdFileData = fs.readFileSync(fileName, "utf-8");
+            mdFileData = fs.readFileSync(mdFileName, "utf-8");
         } catch (e) {
-          bMDFileExists = false;
+          bMdFileExists = false;
         }
-        if (!bMDFileExists) {
+        try {
+            indexMdFileData = fs.readFileSync(indexMdFileName, "utf-8");
+        } catch (e) {
+            bIndexMdFileExists = false;
+        }
+        if (!bIndexMdFileExists && !bMdFileExists) {
+            var indexFileData = '';
             var err = new Error('Not Found');
             err.status = 404;
             next(err);
-        } else {
-            res.render('index', {   content: markdown.process(mdFileData), 
+        }
+        else {
+            res.render('index', {   content: markdown.process(bMdFileExists ? mdFileData : indexMdFileData), 
                                     title: extractTitleFromRequest(req.url), 
                                     cssTheme: config.markdownCssFile});
         }
     } else {
-        var fileName = config.remoteRoot + req.url + '.md';
-        request(fileName, function (error, response, body) {
+        var mdFileName = config.remoteRoot + req.url.replace(/\/$/,'') + '.md';
+        var indexMdFileName = config.remoteRoot + req.url.replace(/\/$/,'') + '/index.md';
+        request(mdFileName, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 res.render('index', {   content: markdown.process(body), 
                                         title: extractTitleFromRequest(req.url), 
                                         cssTheme: config.markdownCssFile});
             } else {
-                var err = new Error('Not Found');
-                err.status = 404;
-                next(err);
+                request(indexMdFileName, function (error, response, body) {
+                    if (!error && response.statusCode == 200) {
+                        res.render('index', {   content: markdown.process(body), 
+                                                title: extractTitleFromRequest(req.url), 
+                                                cssTheme: config.markdownCssFile});
+                    } else {
+                        var err = new Error('Not Found');
+                        err.status = 404;
+                        next(err);
+                    }
+                });
             }
         });
     }
