@@ -13,9 +13,22 @@ var config = {
     },
     layoutFile: 'main',
     localMode: true,
-    markdownCssFile: 'gh-themed.css',
-    remoteRoot: 'https://raw.githubusercontent.com/skijit/Notes/master/',
-    localRoot: 'C:/GitWorkspace/Notes/',
+    markdownCssFile: 'vs-code-theme/combined.css',
+    remoteRoot: 'https://raw.githubusercontent.com/skijit/notes/master/',
+    localRoot: 'C:/GitWorkspace/',
+    port: process.env.PORT || 3000
+  },
+  
+  development_mac: {
+    root: rootPath,
+    app: {
+      name: 'nodtes'
+    },
+    layoutFile: 'main',
+    localMode: true,
+    markdownCssFile: 'vs-code-theme/combined.css',
+    remoteRoot: 'https://raw.githubusercontent.com/skijit/notes/master/',
+    localRoot: '/Users/tomskjei/Documents/GitWorkspace/',
     port: process.env.PORT || 3000
   },
 
@@ -26,9 +39,9 @@ var config = {
     },
     layoutFile: 'main',
     localMode: false,
-    markdownCssFile: 'gh-themed.css',
-    remoteRoot: 'https://raw.githubusercontent.com/skijit/Notes/master/',
-    localRoot: 'UNKNOWN',
+    markdownCssFile: 'vs-code-theme/combined.css',
+    remoteRoot: 'https://raw.githubusercontent.com/skijit/notes/master/',
+    localRoot: 'C:/GitWorkspace/',
     port: process.env.PORT || 3000
   },
 
@@ -39,10 +52,10 @@ var config = {
     },
     layoutFile: 'main',
     localMode: false,
-    markdownCssFile: 'gh-themed.css',
-    remoteRoot: 'https://raw.githubusercontent.com/skijit/Notes/master/',
-    localRoot: 'C:/GitWorkspace/Notes/',
-    port: process.env.PORT
+    markdownCssFile: 'vs-code-theme/combined.css',
+    remoteRoot: 'https://raw.githubusercontent.com/skijit/notes/master/',
+    localRoot: 'C:/GitWorkspace/',
+    port: process.env.PORT || 3000
   }
 };
 

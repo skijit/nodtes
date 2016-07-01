@@ -1,4 +1,3 @@
-
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -39,10 +38,10 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 
 //Resources can be returned locally (via static) or remotely (via redirect)
-if (config.useLocalMode === true) {
-    app.use('/Resources', express.static(config.localRoot+'/Resources'));
+if (config.localMode === true) {
+    app.use('/resources', express.static(config.localRoot+'notes/resources'));
 } else {
-    app.get(/^\/Resources\/.+/i, function(req, res) {
+    app.get(/^\/resources\/.+/i, function(req, res) {
         var remoteReq = config.remoteRoot + req.url;
         res.redirect(301, remoteReq);
     });
@@ -70,7 +69,8 @@ if (app.get('env') === 'development') {
         res.render('error', {
             message: err.message,
             error: err,
-            title: 'error'
+            title: 'error',
+            cssTheme: config.markdownCssFile
         });
     });
 }
@@ -82,7 +82,8 @@ app.use(function(err, req, res, next) {
     res.render('error', {
         message: err.message,
         error: {},
-        title: 'error'
+        title: 'error',
+        cssTheme: config.markdownCssFile
     });
 });
 

@@ -1,4 +1,5 @@
 var marked = require('marked');
+var highlightjs = require('highlight.js');
 
 var markdown = markdown || {};
 
@@ -15,10 +16,23 @@ markdown.renderer.heading = function (text, level) {
         text + '</a></h' + level + '>';
 };
 
+markdown.renderer.code = function(code, language)  {
+    if (language) { language = language.replace(/[()]/g,''); }
+    // Check whether the given language is valid for highlight.js.
+    const validLang = !!(language && highlightjs.getLanguage(language));
+    // Highlight only if the language is valid.
+    const highlighted = validLang ? highlightjs.highlight(language, code).value : code;
+    // Render the highlighted code with `hljs` class.
+    return `<pre><code class="hljs ${language}">${highlighted}</code></pre>`;
+};
+
 markdown.process = function(mdTxt) {
 
     marked.setOptions({
         renderer: markdown.renderer,
+        highlight: function (code) {
+            return highlightjs.highlightAuto(code).value;
+        },
         gfm: true,
         tables: true,
         breaks: false,
