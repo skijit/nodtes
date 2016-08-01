@@ -7,8 +7,20 @@ var markdown = markdown || {};
 markdown.renderer = new marked.Renderer();
 
 markdown.renderer.heading = function (text, level) {
+    var bFirstHeader = (level === 1 && text !== "EOContent"),
+        bLastHeader = (level === 1 && text === "EOContent"),
+        bIntermediateHeader = !(bFirstHeader && bLastHeader);
+    
+    //markdown.clientData.fileHierarchy
+    //TODO:
+    //leadingCloseDiv
+    //content
+    //if first, no leadingCloseDiv
+    //if last, no content
+    //if intermediate, yes leadingCloseDiv AND content
+    
+    
     var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-
     return '<h' + level + '><a name="' +
         escapedText +
         '" class="anchor" href="#' +
@@ -26,7 +38,11 @@ markdown.renderer.code = function(code, language)  {
     return `<pre><code class="hljs ${language}">${highlighted}</code></pre>`;
 };
 
-markdown.process = function(mdTxt) {
+markdown.process = function(mdTxt, fileHierarchy) {
+
+    markdown.clientData = {
+        fileHierarchy : fileHierarchy
+    };
 
     marked.setOptions({
         renderer: markdown.renderer,
@@ -41,11 +57,6 @@ markdown.process = function(mdTxt) {
         smartLists: true,
         smartypants: false
     });
-    
-    //TODO: incorporate highlight.js -- see marked npmjs notes (https://www.npmjs.com/package/marked)
-    //or some other method... not sure how this will work yet
-    //this may be useful: https://github.com/kerzol/markdown-mathjax
-    //also see: http://docs.mathjax.org/en/latest/start.html#tex-and-latex-input
     
     return marked(mdTxt);
 

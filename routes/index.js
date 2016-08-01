@@ -4,6 +4,7 @@ var config = require('../config/config');
 var markdown = require('../markdown')
 var fs = require('fs');
 var request = require('request');
+const path = require('path');
 
 //TODO: A Dynamic Home page
 router.get('/', function(req, res) {
@@ -14,67 +15,278 @@ router.get('/', function(req, res) {
 //main content files route
 router.get(/\/.+/, function(req, res, next) {
     if (config.localMode === true) {
-        var mdFileName = '', indexMdFileName = '';
-        if (req.url.match(/^\/journal\//)) {
-            mdFileName = config.localRoot.replace(/\/$/,'') + req.url + '.md';
-            indexMdFileName = config.localRoot.replace(/\/$/,'') + req.url.replace(/\/$/,'') + '/index.md';
-        } else {
-            mdFileName = config.localRoot.replace(/\/$/,'') + '/notes' + req.url + '.md';
-            indexMdFileName = config.localRoot.replace(/\/$/,'') + '/notes' + req.url.replace(/\/$/,'') + '/index.md';
-        }
-        console.log(mdFileName);
-        console.log(indexMdFileName);
-        var mdFileData = '', indexMdFileData = '';
-        var bMdFileExists = true, bIndexMdFileExists = true;
-        try {
-            mdFileData = fs.readFileSync(mdFileName, "utf-8");
-        } catch (e) {
-          bMdFileExists = false;
-        }
-        try {
-            indexMdFileData = fs.readFileSync(indexMdFileName, "utf-8");
-        } catch (e) {
-            bIndexMdFileExists = false;
-        }
-        if (!bIndexMdFileExists && !bMdFileExists) {
-            var indexFileData = '';
-            var err = new Error('Not Found');
-            err.status = 404;
-            next(err);
-        }
-        else {
-            res.render('index', {   content: markdown.process(bMdFileExists ? mdFileData : indexMdFileData), 
-                                    title: extractTitleFromRequest(req.url), 
-                                    cssTheme: config.markdownCssFile});
-        }
+        processLocalMd(req, res, next);
     } else {
-        var mdFileName = config.remoteRoot + req.url.replace(/\/$/,'') + '.md';
-        var indexMdFileName = config.remoteRoot + req.url.replace(/\/$/,'') + '/index.md';
-        request(mdFileName, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                res.render('index', {   content: markdown.process(body), 
-                                        title: extractTitleFromRequest(req.url), 
-                                        cssTheme: config.markdownCssFile});
-            } else {
-                request(indexMdFileName, function (error, response, body) {
-                    if (!error && response.statusCode == 200) {
-                        res.render('index', {   content: markdown.process(body), 
-                                                title: extractTitleFromRequest(req.url), 
-                                                cssTheme: config.markdownCssFile});
-                    } else {
-                        var err = new Error('Not Found');
-                        err.status = 404;
-                        next(err);
-                    }
-                });
-            }
-        });
+        processRemoteMd(req, res, next);
     }
 });
+
 
 function extractTitleFromRequest(url) {
     var filePath =  url.split('/').filter(function(n){ return n !== undefined && n !== '' });
     return filePath[filePath.length-1].toLowerCase();
+}
+
+function errorWrapper(next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+}
+
+function walkSync(dir, filelist, removeRoot) {
+    
+    if( dir[dir.length-1] != '/') dir=dir.concat('/')
+
+    removeRoot = removeRoot || dir;
+
+    var files = fs.readdirSync(dir);
+    filelist = filelist || [];
+    
+    for(var i = 0; i < files.length; i++) {
+        var file = files[i];
+        
+        if (fs.statSync(path.join(dir, file)).isDirectory()) {
+            filelist = walkSync(path.join(dir, file) + '/', filelist, removeRoot);
+        }
+        else {
+            if (file.match(/\.md$/i)) {
+                filelist.push(path.relative(removeRoot, path.join(dir, file)));
+            }
+        }
+    }
+    
+    return filelist;
+};
+
+function getRepoTree(sha, next) {
+    var options = {
+            url: 'https://api.github.com/repos/skijit/notes/git/trees/' + sha +'?recursive=1',
+            headers: {
+                'User-Agent': 'nodtes-skijit'
+            }
+        };
+        
+    request(options, function(error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var results = JSON.parse(body);
+            var contents = [];
+            if (!results.truncated) {
+                for(var i = 0; i < results.tree.length; i++) {
+                    if (results.tree[i].path.match(/\.md$/i)) {
+                        contents.push(results.tree[i].path);
+                    }
+                }
+            } else {
+                errorWrapper(next);
+            }
+        } else {
+            errorWrapper(next);
+        }
+    });
+}
+
+function getSha(next) {
+    var lastCommitSha = '',
+        options = {
+            //TODO: To avoid rate limits, consider authenticating
+            //https://developer.github.com/v3/#rate-limiting
+            //TODO: Even better, cache this shit
+            url: 'https://api.github.com/repos/skijit/notes/commits?sha=master&per_page=1',
+            headers: {
+                'User-Agent': 'nodtes-skijit'
+            }
+        };
+    
+    request(options, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            lastCommitSha = JSON.parse(body)[0].sha;
+            getRepoTree(lastCommitSha)
+        } else {
+            errorWrapper(next);
+        }
+    });
+}
+
+function getSiteDirectory(next) {
+    //add local and remote parsing to get site directory into an object structure
+    
+    if (config.localMode) {
+        var dirList = walkSync(config.localRoot.replace(/\/$/,'') + '/notes');
+        var dirTree = parseDirectory(dirList,'\\');
+        return dirTree;
+    } else {
+        getSha(next);
+    }
+}
+
+function parseDirectory(vals, delimiter) {
+    
+    var curPtr,
+        rv = { 
+                path: '/',
+                files: []
+            };
+    
+    for(var i = 0; i < vals.length; i++) {
+        curPtr = rv;
+        var segments = vals[i].split(delimiter);
+        for(var j = 0; j < segments.length; j++) {
+            if (j === segments.length-1 && segments[j].match(/\.md$/i)) {
+                curPtr.files.push(segments[j].substring(0, segments[j].length-3));
+            } else if (!curPtr.hasOwnProperty(segments[j])) {
+                curPtr[segments[j]] =   { 
+                                            path: segments[j],
+                                            files: []
+                                        }
+            }
+            curPtr = curPtr[segments[j]];
+        }
+    }
+    
+    return rv;
+}
+
+function extractBreadCrumb(url) {
+    return url.split('/');
+}
+
+function buildFileHierarchy(lines) {
+    var docSegments = [];
+    var curSec;
+    var stack = [];
+    var headerCtr = 0;
+    for(var i = 0; i < lines.length; i++) {
+        var t = lines[i].match(/^(\#+)\s{1}(.+)$/i);
+        if (t != null) {
+            console.log(t[1] + ' ---- ' + t[2]);
+            curSec = {
+                title: t[2],
+                level: t[1].length-1,
+                parents: [],
+                headerNumber: ++headerCtr,
+                lineNumber: i + 1,
+                fullPath: '',
+                linkableTitle: '',
+                linkablePath: ''
+            }
+            curTop = (stack.length > 0) ? stack[stack.length-1] : null;
+            if (curTop === null) {
+                stack.push(curSec);
+            } else if (curTop.level < curSec.level) {
+                curSec.parents = curSec.parents.concat(curTop.parents);
+                curSec.parents.push(curTop.title);
+                stack.push(curSec);
+            } else if (curTop.level === curSec.level) {
+                curSec.parents = curSec.parents.concat(curTop.parents);
+                stack.pop();
+                stack.push(curSec);
+            } else {
+                while(stack.length !== 0 && stack[stack.length-1].level > curSec.level) {
+                    stack.pop();
+                }
+            }
+            curSec.fullPath = curSec.parents.length === 0 ? curSec.title : curSec.parents.join('//') + '//' + curSec.title;
+            curSec.linkableTitle = curSec.title.toLowerCase().replace(/[^\w]+/g, '-');
+            curSec.linkablePath = curSec.fullPath.toLowerCase().replace(/[^\w]+/g, '-');
+            
+            docSegments.push(curSec);
+        }
+        
+        
+        if (lines[i].match(/^\=+\s*$/)) {
+            console.log('TITLE FOUND AT LINE ' + i + ': ' + lines[i-1]);
+        }
+    }
+    
+    return docSegments;
+}
+
+function insertClosingHeader(lines, fileHierarchy) {
+    var lastHeaderLine = fileHierarchy[fileHierarchy.length-1].lineNumber;
+    var insertedCloser = false;
+    for (var i = lastHeaderLine; i < lines.length && !insertedCloser; i++) {
+        
+        if (lines[i].match(/^\-{2,}\s*$/)) {
+            lines[i] = "# EOContent\r\n" + lines[i];
+            insertedCloser = true;
+        } else if (i === lines.length-1) {
+            lines[i] = lines[i] + "\r\n# EoContent";
+            insertedCloser = true;
+        }
+    }
+}
+
+function extractTitle(lines) {
+    for(var i = 1; i < lines.length; i++) {
+        if (lines[i].match(/^\=+\s*$/)) {
+            return lines[i-1];
+        }
+    }
+}
+
+function packageViewData(body, url, next) {
+    var dirTree = getSiteDirectory(next); //TODO: pass this in as a param
+    var breadcrumb = extractBreadCrumb(url.substring(1));
+    
+    var lines = body.split(/\r?\n/);
+    var title = extractTitle(lines);
+    var fileHierarchy = buildFileHierarchy(lines);
+    insertClosingHeader(lines, fileHierarchy);
+    body = lines.join("\r\n");
+    
+    return {
+        content: markdown.process(body, fileHierarchy), 
+        title: extractTitleFromRequest(url), 
+        cssTheme: config.markdownCssFile 
+    };
+}
+
+function processRemoteMd(req, res, next) {
+    var mdFileName = config.remoteRoot + req.url.replace(/\/$/,'') + '.md';
+    var indexMdFileName = config.remoteRoot + req.url.replace(/\/$/,'') + '/index.md';
+    
+    request(mdFileName, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            res.render('index', packageViewData(body, req.url, next));
+        } else {
+            request(indexMdFileName, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    res.render('index', packageViewData(body, req.url, next));
+                } else {
+                    errorWrapper(next);
+                }
+            });
+        }
+    });
+}
+
+function processLocalMd(req, res, next) {
+    var mdFileName = '', indexMdFileName = '';
+    if (req.url.match(/^\/journal\//)) {
+        mdFileName = config.localRoot.replace(/\/$/,'') + req.url + '.md';
+        indexMdFileName = config.localRoot.replace(/\/$/,'') + req.url.replace(/\/$/,'') + '/index.md';
+    } else {
+        mdFileName = config.localRoot.replace(/\/$/,'') + '/notes' + req.url + '.md';
+        indexMdFileName = config.localRoot.replace(/\/$/,'') + '/notes' + req.url.replace(/\/$/,'') + '/index.md';
+    }
+    
+    var fileData = '';
+    try {
+        fileData = fs.readFileSync(mdFileName, "utf-8");
+    } catch (e) { }
+
+    if (fileData === '') {
+        try {
+            fileData = fs.readFileSync(indexMdFileName, "utf-8");
+        } catch (e) { }
+    }
+    
+    if (fileData === '') {
+        errorWrapper(next);
+    }
+    else {
+        res.render('index', packageViewData(fileData, req.url, next));
+    }
 }
 
 module.exports = router;
