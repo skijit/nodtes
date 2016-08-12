@@ -1,50 +1,52 @@
-var express = require('express');
-var router = express.Router();
-var config = require('../config/config');
-var markdown = require('../markdown')
-var fs = require('fs');
-var request = require('request');
-const path = require('path');
-
-//TODO: A Dynamic Home page
-router.get('/', function(req, res) {
-  res.render('index', { title: 'Contents', content: '<div>Content Page: Injected HTML</div>' });
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments)).next());
+    });
+};
+const express = require("express");
+const path = require("path");
+const markdown_1 = require("../markdown");
+const config = require("../config/envSettings");
+const fs = require("fs");
+const request = require("request");
+let router = express.Router();
+exports.router = router;
+router.get('/', function (req, res) {
+    res.render('index', { title: 'Contents', content: '<div>Content Page: Injected HTML</div>' });
 });
-
-
-//main content files route
-router.get(/\/.+/, function(req, res, next) {
-    if (config.localMode === true) {
+router.get(/\/.+/, function (req, res, next) {
+    var p = new Promise((resolve, reject) => {
+        resolve('a string');
+    });
+    p.then((data) => console.log(data));
+    if (config.settings.localMode === true) {
         processLocalMd(req, res, next);
-    } else {
+    }
+    else {
         processRemoteMd(req, res, next);
     }
 });
-
-
 function extractTitleFromRequest(url) {
-    var filePath =  url.split('/').filter(function(n){ return n !== undefined && n !== '' });
-    return filePath[filePath.length-1].toLowerCase();
+    var filePath = url.split('/').filter(function (n) { return n !== undefined && n !== ''; });
+    return filePath[filePath.length - 1].toLowerCase();
 }
-
 function errorWrapper(next) {
     var err = new Error('Not Found');
-    err.status = 404;
+    err['status'] = 404;
     next(err);
 }
-
 function walkSync(dir, filelist, removeRoot) {
-    
-    if( dir[dir.length-1] != '/') dir=dir.concat('/')
-
+    if (dir[dir.length - 1] != '/')
+        dir = dir.concat('/');
     removeRoot = removeRoot || dir;
-
     var files = fs.readdirSync(dir);
     filelist = filelist || [];
-    
-    for(var i = 0; i < files.length; i++) {
+    for (var i = 0; i < files.length; i++) {
         var file = files[i];
-        
         if (fs.statSync(path.join(dir, file)).isDirectory()) {
             filelist = walkSync(path.join(dir, file) + '/', filelist, removeRoot);
         }
@@ -54,239 +56,267 @@ function walkSync(dir, filelist, removeRoot) {
             }
         }
     }
-    
     return filelist;
-};
-
-function getRepoTree(sha, next) {
+}
+;
+function getRepoTreeAsync(sha) {
     var options = {
-            url: 'https://api.github.com/repos/skijit/notes/git/trees/' + sha +'?recursive=1',
-            headers: {
-                'User-Agent': 'nodtes-skijit'
+        url: 'https://api.github.com/repos/skijit/notes/git/trees/' + sha + '?recursive=1',
+        headers: {
+            'User-Agent': 'nodtes-skijit'
+        }
+    };
+    return new Promise((resolve, reject) => {
+        request(options, (error, response, body) => {
+            if (!error && response.statusCode == 200) {
+                resolve(body);
             }
-        };
-        
-    request(options, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var results = JSON.parse(body);
-            var contents = [];
+            else {
+                reject('error getting repo tree: \r\n' + JSON.stringify(error));
+            }
+        });
+    });
+}
+function getRepoTree(sha, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let results = JSON.parse(yield getRepoTreeAsync(sha));
+            let contents = [];
             if (!results.truncated) {
-                for(var i = 0; i < results.tree.length; i++) {
+                for (var i = 0; i < results.tree.length; i++) {
                     if (results.tree[i].path.match(/\.md$/i)) {
                         contents.push(results.tree[i].path);
                     }
                 }
-            } else {
-                errorWrapper(next);
+                console.log('REPO TREE CONTENTS!');
+                console.log(contents);
             }
-        } else {
+            else {
+                throw new Error("error: git repo tree results were truncated.");
+            }
+        }
+        catch (err) {
+            console.log(err);
             errorWrapper(next);
         }
     });
 }
-
+function getShaAsync() {
+    let lastCommitSha = '', options = {
+        url: 'https://api.github.com/repos/skijit/notes/commits?sha=master&per_page=1',
+        headers: {
+            'User-Agent': 'nodtes-skijit'
+        }
+    };
+    return new Promise((resolve, reject) => {
+        request(options, (error, response, body) => {
+            if (!error && response.statusCode == 200) {
+                resolve(body);
+            }
+            else {
+                reject('error getting SHA tree: \r\n' + JSON.stringify(error));
+            }
+        });
+    });
+}
 function getSha(next) {
-    var lastCommitSha = '',
-        options = {
-            //TODO: To avoid rate limits, consider authenticating
-            //https://developer.github.com/v3/#rate-limiting
-            //TODO: Even better, cache this shit
-            url: 'https://api.github.com/repos/skijit/notes/commits?sha=master&per_page=1',
-            headers: {
-                'User-Agent': 'nodtes-skijit'
-            }
-        };
-    
-    request(options, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            lastCommitSha = JSON.parse(body)[0].sha;
-            getRepoTree(lastCommitSha)
-        } else {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let lastCommitSha = JSON.parse(yield getShaAsync())[0].sha;
+            getRepoTree(lastCommitSha, next);
+        }
+        catch (err) {
+            console.log(err);
             errorWrapper(next);
         }
     });
 }
-
 function getSiteDirectory(next) {
-    //add local and remote parsing to get site directory into an object structure
-    
-    if (config.localMode) {
-        var dirList = walkSync(config.localRoot.replace(/\/$/,'') + '/notes');
-        var dirTree = parseDirectory(dirList,'\\');
+    if (config.settings.localMode) {
+        var dirList = walkSync(config.settings.localRoot.replace(/\/$/, '') + '/notes', undefined, undefined);
+        var dirTree = parseDirectory(dirList, '\\');
         return dirTree;
-    } else {
+    }
+    else {
         getSha(next);
     }
 }
-
 function parseDirectory(vals, delimiter) {
-    
-    var curPtr,
-        rv = { 
-                path: '/',
-                files: []
-            };
-    
-    for(var i = 0; i < vals.length; i++) {
+    var curPtr, rv = {
+        path: '/',
+        files: []
+    };
+    for (var i = 0; i < vals.length; i++) {
         curPtr = rv;
         var segments = vals[i].split(delimiter);
-        for(var j = 0; j < segments.length; j++) {
-            if (j === segments.length-1 && segments[j].match(/\.md$/i)) {
-                curPtr.files.push(segments[j].substring(0, segments[j].length-3));
-            } else if (!curPtr.hasOwnProperty(segments[j])) {
-                curPtr[segments[j]] =   { 
-                                            path: segments[j],
-                                            files: []
-                                        }
+        for (var j = 0; j < segments.length; j++) {
+            if (j === segments.length - 1 && segments[j].match(/\.md$/i)) {
+                curPtr.files.push(segments[j].substring(0, segments[j].length - 3));
+            }
+            else if (!curPtr.hasOwnProperty(segments[j])) {
+                curPtr[segments[j]] = {
+                    path: segments[j],
+                    files: []
+                };
             }
             curPtr = curPtr[segments[j]];
         }
     }
-    
     return rv;
 }
-
 function extractBreadCrumb(url) {
     return url.split('/');
 }
-
 function buildFileHierarchy(lines) {
     var docSegments = [];
     var curSec;
     var stack = [];
     var headerCtr = 0;
-    for(var i = 0; i < lines.length; i++) {
+    for (var i = 0; i < lines.length; i++) {
         var t = lines[i].match(/^(\#+)\s{1}(.+)$/i);
         if (t != null) {
             console.log(t[1] + ' ---- ' + t[2]);
             curSec = {
                 title: t[2],
-                level: t[1].length-1,
+                level: t[1].length - 1,
                 parents: [],
                 headerNumber: ++headerCtr,
                 lineNumber: i + 1,
                 fullPath: '',
                 linkableTitle: '',
                 linkablePath: ''
-            }
-            curTop = (stack.length > 0) ? stack[stack.length-1] : null;
+            };
+            let curTop = (stack.length > 0) ? stack[stack.length - 1] : null;
             if (curTop === null) {
                 stack.push(curSec);
-            } else if (curTop.level < curSec.level) {
+            }
+            else if (curTop.level < curSec.level) {
                 curSec.parents = curSec.parents.concat(curTop.parents);
                 curSec.parents.push(curTop.title);
                 stack.push(curSec);
-            } else if (curTop.level === curSec.level) {
+            }
+            else if (curTop.level === curSec.level) {
                 curSec.parents = curSec.parents.concat(curTop.parents);
                 stack.pop();
                 stack.push(curSec);
-            } else {
-                while(stack.length !== 0 && stack[stack.length-1].level > curSec.level) {
+            }
+            else {
+                while (stack.length !== 0 && stack[stack.length - 1].level > curSec.level) {
                     stack.pop();
                 }
             }
             curSec.fullPath = curSec.parents.length === 0 ? curSec.title : curSec.parents.join('//') + '//' + curSec.title;
             curSec.linkableTitle = curSec.title.toLowerCase().replace(/[^\w]+/g, '-');
             curSec.linkablePath = curSec.fullPath.toLowerCase().replace(/[^\w]+/g, '-');
-            
             docSegments.push(curSec);
         }
-        
-        
         if (lines[i].match(/^\=+\s*$/)) {
-            console.log('TITLE FOUND AT LINE ' + i + ': ' + lines[i-1]);
+            console.log('TITLE FOUND AT LINE ' + i + ': ' + lines[i - 1]);
         }
     }
-    
     return docSegments;
 }
-
 function insertClosingHeader(lines, fileHierarchy) {
-    var lastHeaderLine = fileHierarchy[fileHierarchy.length-1].lineNumber;
+    var lastHeaderLine = fileHierarchy[fileHierarchy.length - 1].lineNumber;
     var insertedCloser = false;
     for (var i = lastHeaderLine; i < lines.length && !insertedCloser; i++) {
-        
         if (lines[i].match(/^\-{2,}\s*$/)) {
             lines[i] = "# EOContent\r\n" + lines[i];
             insertedCloser = true;
-        } else if (i === lines.length-1) {
+        }
+        else if (i === lines.length - 1) {
             lines[i] = lines[i] + "\r\n# EoContent";
             insertedCloser = true;
         }
     }
 }
-
 function extractTitle(lines) {
-    for(var i = 1; i < lines.length; i++) {
+    for (var i = 1; i < lines.length; i++) {
         if (lines[i].match(/^\=+\s*$/)) {
-            return lines[i-1];
+            return lines[i - 1];
         }
     }
 }
-
 function packageViewData(body, url, next) {
-    var dirTree = getSiteDirectory(next); //TODO: pass this in as a param
+    var dirTree = getSiteDirectory(next);
     var breadcrumb = extractBreadCrumb(url.substring(1));
-    
     var lines = body.split(/\r?\n/);
     var title = extractTitle(lines);
     var fileHierarchy = buildFileHierarchy(lines);
     insertClosingHeader(lines, fileHierarchy);
     body = lines.join("\r\n");
-    
     return {
-        content: markdown.process(body, fileHierarchy), 
-        title: extractTitleFromRequest(url), 
-        cssTheme: config.markdownCssFile 
+        content: markdown_1.markdown.process(body, fileHierarchy),
+        title: extractTitleFromRequest(url),
+        cssTheme: config.settings.markdownCssFile
     };
 }
-
+function getFileAsync(url) {
+    return new Promise((resolve, reject) => {
+        request(url, (error, response, body) => {
+            if (!error && response.statusCode == 200) {
+                resolve(body);
+            }
+            else {
+                reject(`error getting file: ${url} \r\n ${JSON.stringify(error)}`);
+            }
+        });
+    });
+}
 function processRemoteMd(req, res, next) {
-    var mdFileName = config.remoteRoot + req.url.replace(/\/$/,'') + '.md';
-    var indexMdFileName = config.remoteRoot + req.url.replace(/\/$/,'') + '/index.md';
-    
-    request(mdFileName, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            res.render('index', packageViewData(body, req.url, next));
-        } else {
-            request(indexMdFileName, function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    res.render('index', packageViewData(body, req.url, next));
-                } else {
-                    errorWrapper(next);
-                }
-            });
+    return __awaiter(this, void 0, void 0, function* () {
+        let mdFileName = config.settings.remoteRoot + req.url.replace(/\/$/, '') + '.md', indexMdFileName = config.settings.remoteRoot + req.url.replace(/\/$/, '') + '/index.md', bodyMD = '', bodyIndex = '';
+        try {
+            bodyMD = yield getFileAsync(mdFileName);
+        }
+        catch (err) { }
+        try {
+            bodyIndex = yield getFileAsync(indexMdFileName);
+        }
+        catch (err) { }
+        if (bodyMD || bodyIndex) {
+            res.render('index', packageViewData(bodyMD ? bodyMD : bodyIndex, req.url, next));
+        }
+        else {
+            errorWrapper(next);
         }
     });
 }
-
-function processLocalMd(req, res, next) {
-    var mdFileName = '', indexMdFileName = '';
-    if (req.url.match(/^\/journal\//)) {
-        mdFileName = config.localRoot.replace(/\/$/,'') + req.url + '.md';
-        indexMdFileName = config.localRoot.replace(/\/$/,'') + req.url.replace(/\/$/,'') + '/index.md';
-    } else {
-        mdFileName = config.localRoot.replace(/\/$/,'') + '/notes' + req.url + '.md';
-        indexMdFileName = config.localRoot.replace(/\/$/,'') + '/notes' + req.url.replace(/\/$/,'') + '/index.md';
-    }
-    
-    var fileData = '';
-    try {
-        fileData = fs.readFileSync(mdFileName, "utf-8");
-    } catch (e) { }
-
-    if (fileData === '') {
-        try {
-            fileData = fs.readFileSync(indexMdFileName, "utf-8");
-        } catch (e) { }
-    }
-    
-    if (fileData === '') {
-        errorWrapper(next);
-    }
-    else {
-        res.render('index', packageViewData(fileData, req.url, next));
-    }
+function readFileAsync(fileName) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(fileName, "utf-8", (err, data) => {
+            if (err)
+                reject(`error reading filename ${fileName} : \r\n ${JSON.stringify(err)}`);
+            else
+                resolve(data);
+        });
+    });
 }
-
-module.exports = router;
+function processLocalMd(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let mdFileName = '', indexMdFileName = '', bodyMD = '', bodyIndex = '';
+        if (req.url.match(/^\/journal\//)) {
+            mdFileName = config.settings.localRoot.replace(/\/$/, '') + req.url + '.md';
+            indexMdFileName = config.settings.localRoot.replace(/\/$/, '') + req.url.replace(/\/$/, '') + '/index.md';
+        }
+        else {
+            mdFileName = config.settings.localRoot.replace(/\/$/, '') + '/notes' + req.url + '.md';
+            indexMdFileName = config.settings.localRoot.replace(/\/$/, '') + '/notes' + req.url.replace(/\/$/, '') + '/index.md';
+        }
+        try {
+            bodyMD = yield readFileAsync(mdFileName);
+        }
+        catch (err) { }
+        try {
+            bodyIndex = yield readFileAsync(indexMdFileName);
+        }
+        catch (err) { }
+        if (bodyMD || bodyIndex) {
+            res.render('index', packageViewData(bodyMD ? bodyMD : bodyIndex, req.url, next));
+        }
+        else {
+            errorWrapper(next);
+        }
+    });
+}
+//# sourceMappingURL=index.js.map

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-var app = require('../app');
+var A = require('../app');
 
-app.set('port', process.env.PORT || 3000);
+A.app.set('port', process.env.PORT || 3000);
 
-var server = app.listen(app.get('port'), function() {
+var server = A.app.listen(A.app.get('port'), function() {
   console.log('Express server listening on port ' + server.address().port);
 });

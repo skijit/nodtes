@@ -2,7 +2,8 @@ var gulp = require('gulp'),
   nodemon = require('gulp-nodemon'),
   plumber = require('gulp-plumber'),
   livereload = require('gulp-livereload'),
-  less = require('gulp-less');
+  less = require('gulp-less'),
+  ts = require('gulp-typescript');
 
 gulp.task('less', function () {
   gulp.src('./public/css/*.less')
@@ -16,11 +17,19 @@ gulp.task('watch', function() {
   gulp.watch('./public/css/*.less', ['less']);
 });
 
+gulp.task('transpile', function() {
+  var tsProject = ts.createProject("tsconfig.json");
+  tsProject .src()
+            .pipe(ts(tsProject))
+            .js.pipe(gulp.dest("."));
+});
+
 gulp.task('develop', function () {
   livereload.listen();
   nodemon({
     script: 'bin/www',
-    ext: 'js handlebars coffee',
+    ext: 'js handlebars ts',
+    tasks: ['transpile'],
     stdout: false
   }).on('readable', function () {
     this.stdout.on('data', function (chunk) {

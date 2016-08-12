@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": false,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        // "outFile": "bin/tsc.js",  //only works with system and amd modules, not common, which is used by node
+        "sourceMap": true,
+        "target": "ES6"
+    },
+     "exclude": [
+        "node_modules",
+        "bin"
+    ]
+}
