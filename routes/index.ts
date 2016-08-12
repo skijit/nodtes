@@ -1,11 +1,20 @@
 import * as express from "express";
 import * as path from "path";
-import { markdown } from "../markdown";
-import * as config from "../config/envSettings";
 import * as fs from "fs";
 import * as request from "request";
 
+import { settings, EnvConfig } from "../config/EnvSettings";
+import { MdFile } from '../core/MdFile';
+import { ReadSiteDirectory } from '../core/ReadSiteDirectory';
+import { markdown } from "../markdown";
+
+
+
 let router = express.Router();
+
+function errorWrapper(next) {
+    
+}
 
 //TODO: A Dynamic Home page
 router.get('/', function(req, res) {
@@ -15,17 +24,31 @@ router.get('/', function(req, res) {
 
 //main content files route
 router.get(/\/.+/, function(req, res, next) {
-    var p = new Promise<string>((resolve, reject) => { 
-        resolve('a string'); 
-    });
+    let err;
     
-    p.then((data) => console.log(data));
-    
-    if (config.settings.localMode === true) {
-        processLocalMd(req, res, next);
-    } else {
-        processRemoteMd(req, res, next);
+    try {
+        let rr = new ResourceResolver(settings);
+        let mdFile : MdFile = new MdFile(/* PARMS TODO */);
+        let siteDirectory : string[] = ReadSiteDirectory(/* PARMS TODO */);
+        
+    } catch(_err) {
+        console.log(_err);
+        err = new Error('Not Found');
+        err['status'] = 404;
+        next(err);
     }
+    
+    if (!err) {
+        res.render('index', {
+            content: mdFile.content,
+            title: mdFile.title,
+            breadcrumb: mdFile.breadcrumb,
+            fileHierarchy: mdFile.fileHierarchy, 
+            siteDirectory: siteDirectory,
+            cssTheme: settings.markdownCssFile
+        });
+    }
+
 });
 
 
@@ -34,11 +57,7 @@ function extractTitleFromRequest(url) {
     return filePath[filePath.length-1].toLowerCase();
 }
 
-function errorWrapper(next) {
-    var err = new Error('Not Found');
-    err['status'] = 404;
-    next(err);
-}
+
 
 //function walkSync(dir, filelist = undefined, removeRoot  = undefined) {
 function walkSync(dir, filelist, removeRoot) {
@@ -148,9 +167,9 @@ async function getSha(next) {
 function getSiteDirectory(next) {
     //add local and remote parsing to get site directory into an object structure
     
-    if (config.settings.localMode) {
+    if (settings.localMode) {
         //var dirList = walkSync(config.settings.localRoot.replace(/\/$/,'') + '/notes');
-        var dirList = walkSync(config.settings.localRoot.replace(/\/$/,'') + '/notes', undefined, undefined);
+        var dirList = walkSync(settings.localRoot.replace(/\/$/,'') + '/notes', undefined, undefined);
         var dirTree = parseDirectory(dirList,'\\');
         return dirTree;
     } else {
@@ -276,7 +295,7 @@ function packageViewData(body, url, next) {
     return {
         content: markdown.process(body, fileHierarchy), 
         title: extractTitleFromRequest(url), 
-        cssTheme: config.settings.markdownCssFile 
+        cssTheme: settings.markdownCssFile 
     };
 }
 
@@ -297,8 +316,8 @@ function getFileAsync(url) {
 }
 
 async function processRemoteMd(req, res, next) {
-    let mdFileName = config.settings.remoteRoot + req.url.replace(/\/$/,'') + '.md',
-        indexMdFileName = config.settings.remoteRoot + req.url.replace(/\/$/,'') + '/index.md',
+    let mdFileName = settings.remoteRoot + req.url.replace(/\/$/,'') + '.md',
+        indexMdFileName = settings.remoteRoot + req.url.replace(/\/$/,'') + '/index.md',
         bodyMD = '',
         bodyIndex = '';
         
@@ -333,11 +352,11 @@ async function processLocalMd(req, res, next) {
         bodyIndex = '';
         
     if (req.url.match(/^\/journal\//)) {
-        mdFileName = config.settings.localRoot.replace(/\/$/,'') + req.url + '.md';
-        indexMdFileName = config.settings.localRoot.replace(/\/$/,'') + req.url.replace(/\/$/,'') + '/index.md';
+        mdFileName = settings.localRoot.replace(/\/$/,'') + req.url + '.md';
+        indexMdFileName = settings.localRoot.replace(/\/$/,'') + req.url.replace(/\/$/,'') + '/index.md';
     } else {
-        mdFileName = config.settings.localRoot.replace(/\/$/,'') + '/notes' + req.url + '.md';
-        indexMdFileName = config.settings.localRoot.replace(/\/$/,'') + '/notes' + req.url.replace(/\/$/,'') + '/index.md';
+        mdFileName = settings.localRoot.replace(/\/$/,'') + '/notes' + req.url + '.md';
+        indexMdFileName = settings.localRoot.replace(/\/$/,'') + '/notes' + req.url.replace(/\/$/,'') + '/index.md';
     }
     
     try { bodyMD = await readFileAsync(mdFileName); } catch(err) {}

@@ -7,7 +7,7 @@ import * as logger from "morgan";
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 import * as exphbs from "express-handlebars";
-import * as config from "./config/envSettings";
+import { settings, EnvConfig } from "./config/EnvSettings";
 import * as router from "./routes/index";
 
 var app = express();
@@ -21,14 +21,14 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 // view engine setup
 app.engine('handlebars', exphbs({
-  layoutsDir: config.settings.root + '/views/layouts/',
-  defaultLayout: config.settings.layoutFile,
-  partialsDir: [config.settings.root +'/views/partials/']
+  layoutsDir: settings.root + '/views/layouts/',
+  defaultLayout: settings.layoutFile,
+  partialsDir: [settings.root +'/views/partials/']
 }));
-app.set('views', config.settings.root + '/views'); 
+app.set('views', settings.root + '/views'); 
 app.set('view engine', 'handlebars');
 
-app.use(favicon(config.settings.root + '/public/img/favicon.ico'));
+app.use(favicon(settings.root + '/public/img/favicon.ico'));
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -38,16 +38,16 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 
 //Resources can be returned locally (via static) or remotely (via redirect)
-if (config.settings.localMode === true) {
-    app.use('/resources', express.static(config.settings.localRoot+'notes/resources'));
+if (settings.localMode === true) {
+    app.use('/resources', express.static(settings.localRoot+'notes/resources'));
 } else {
     app.get(/^\/resources\/.+/i, function(req, res) {
-        var remoteReq = config.settings.remoteRoot + req.url;
+        var remoteReq = settings.remoteRoot + req.url;
         res.redirect(301, remoteReq);
     });
 }
 
-app.use(express.static(config.settings.root + '/public'));
+app.use(express.static(settings.root + '/public'));
 
 app.use('/', router.router);
 
@@ -73,7 +73,7 @@ if (app.get('env') === 'development') {
       message: err.message,
       error: err,
       title: 'error',
-      cssTheme: config.settings.markdownCssFile
+      cssTheme: settings.markdownCssFile
     });
   });
 }
@@ -86,7 +86,7 @@ app.use((err: any, req, res, next) => {
     message: err.message,
     error: {},
     title: 'error',
-    cssTheme: config.settings.markdownCssFile
+    cssTheme: settings.markdownCssFile
   });
   return null;
 });

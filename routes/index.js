@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const express = require("express");
 const path = require("path");
 const markdown_1 = require("../markdown");
-const config = require("../config/envSettings");
+const EnvSettings_1 = require("../config/EnvSettings");
 const fs = require("fs");
 const request = require("request");
 let router = express.Router();
@@ -23,7 +23,7 @@ router.get(/\/.+/, function (req, res, next) {
         resolve('a string');
     });
     p.then((data) => console.log(data));
-    if (config.settings.localMode === true) {
+    if (EnvSettings_1.settings.localMode === true) {
         processLocalMd(req, res, next);
     }
     else {
@@ -132,8 +132,8 @@ function getSha(next) {
     });
 }
 function getSiteDirectory(next) {
-    if (config.settings.localMode) {
-        var dirList = walkSync(config.settings.localRoot.replace(/\/$/, '') + '/notes', undefined, undefined);
+    if (EnvSettings_1.settings.localMode) {
+        var dirList = walkSync(EnvSettings_1.settings.localRoot.replace(/\/$/, '') + '/notes', undefined, undefined);
         var dirTree = parseDirectory(dirList, '\\');
         return dirTree;
     }
@@ -248,7 +248,7 @@ function packageViewData(body, url, next) {
     return {
         content: markdown_1.markdown.process(body, fileHierarchy),
         title: extractTitleFromRequest(url),
-        cssTheme: config.settings.markdownCssFile
+        cssTheme: EnvSettings_1.settings.markdownCssFile
     };
 }
 function getFileAsync(url) {
@@ -265,7 +265,7 @@ function getFileAsync(url) {
 }
 function processRemoteMd(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        let mdFileName = config.settings.remoteRoot + req.url.replace(/\/$/, '') + '.md', indexMdFileName = config.settings.remoteRoot + req.url.replace(/\/$/, '') + '/index.md', bodyMD = '', bodyIndex = '';
+        let mdFileName = EnvSettings_1.settings.remoteRoot + req.url.replace(/\/$/, '') + '.md', indexMdFileName = EnvSettings_1.settings.remoteRoot + req.url.replace(/\/$/, '') + '/index.md', bodyMD = '', bodyIndex = '';
         try {
             bodyMD = yield getFileAsync(mdFileName);
         }
@@ -296,12 +296,12 @@ function processLocalMd(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         let mdFileName = '', indexMdFileName = '', bodyMD = '', bodyIndex = '';
         if (req.url.match(/^\/journal\//)) {
-            mdFileName = config.settings.localRoot.replace(/\/$/, '') + req.url + '.md';
-            indexMdFileName = config.settings.localRoot.replace(/\/$/, '') + req.url.replace(/\/$/, '') + '/index.md';
+            mdFileName = EnvSettings_1.settings.localRoot.replace(/\/$/, '') + req.url + '.md';
+            indexMdFileName = EnvSettings_1.settings.localRoot.replace(/\/$/, '') + req.url.replace(/\/$/, '') + '/index.md';
         }
         else {
-            mdFileName = config.settings.localRoot.replace(/\/$/, '') + '/notes' + req.url + '.md';
-            indexMdFileName = config.settings.localRoot.replace(/\/$/, '') + '/notes' + req.url.replace(/\/$/, '') + '/index.md';
+            mdFileName = EnvSettings_1.settings.localRoot.replace(/\/$/, '') + '/notes' + req.url + '.md';
+            indexMdFileName = EnvSettings_1.settings.localRoot.replace(/\/$/, '') + '/notes' + req.url.replace(/\/$/, '') + '/index.md';
         }
         try {
             bodyMD = yield readFileAsync(mdFileName);

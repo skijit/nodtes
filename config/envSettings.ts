@@ -1,34 +1,5 @@
-export class EnvConfig {
-    
-    name: string;
-    layoutFile: string;
-    localMode: boolean;
-    markdownCssFile: string;
-    localRoot: string;
-    
-    constructor(obj : ILocalConfig) {
-        this.name = obj.name;
-        this.layoutFile = obj.layoutFile;
-        this.localMode = obj.localMode;
-        this.markdownCssFile = obj.markdownCssFile;
-        this.localRoot = obj.localRoot;
-    }
-    
-    get root(): string {
-        return globals.APP_ROOT;
-    }
-    get port(): number {
-        return globals.APP_PORT;
-    }
-    get app(): IAppName {
-        return { name : globals.APP_NAME };
-    }
-    get remoteRoot() : string {
-        return globals.REMOTE_ROOT;
-    }
-    
-}
-
+import  { EnvConfig, ILocalConfig } from './EnvConfig';
+import * as globals from './GlobalSettings';
 
 let configs: EnvConfig[] = [
     new EnvConfig(
@@ -65,28 +36,11 @@ let configs: EnvConfig[] = [
                         })
 ];
 
-/* ------------------------------------ */
-import * as globals from './globalSettings';
-import * as path from 'path';
+export var settings : EnvConfig = undefined;
 
-export var settings = undefined;
 for(let curEnv of configs) {
     if (curEnv.name === globals.ENV_NAME)
         settings = curEnv;
 }
 
-
-export interface IAppName {
-    name: string;
-}
-
-export interface ILocalConfig {
-    name: string;
-    layoutFile: string;
-    localMode: boolean;
-    markdownCssFile: string;
-    localRoot: string;
-}
-
-
-
+export { EnvConfig } from './EnvConfig';

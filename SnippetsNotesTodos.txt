@@ -26,17 +26,7 @@ Typescript / project structure:
 http://stackoverflow.com/questions/32501064/typescript-recommended-project-structure-with-modules
 
 
-Refactors
-    Reorg settings files
-        File:   Class EnvConfig
-                Getter method for global settings
-        File:   GlobalsSettings: keep as is
-        File:   EnvSettings
-                re-export EnvConfig
-                Insert settings in initialization of envSettings : EnvConfig[]
-                function which takes a param for the environment sets it to global settings
-        Client: Import  { settings, EnvConfig } from EnvSettings 
-    
+Refactors  
     Core/Markdown:
         default export Class MarkDown
             inject: fileHierarchy                            
