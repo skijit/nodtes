@@ -7,7 +7,7 @@ import DirTree from './DirTree';
 class FSDirectoryReader extends SiteDirectoryReader {
 
   
-  constructor(private localRoot : string, _url : string) { super(_url); }
+  constructor(private localRoot : string, _url : string, delimeter : string ) { super(_url, delimeter); }
 
 
   private walkDir(dir : string, fileList : string[], removeRoot : string) : string[] {
@@ -31,7 +31,7 @@ class FSDirectoryReader extends SiteDirectoryReader {
                 fileList.push(path.relative(removeRoot, path.join(dir, file)));
             }
         }
-    }
+    } 
     
     return fileList;
   } 
@@ -42,9 +42,9 @@ class FSDirectoryReader extends SiteDirectoryReader {
       this.flatList = this.walkDir(this.localRoot.replace(/\/$/,'') + '/notes', undefined, undefined)
                       .concat(
                         this.walkDir(this.localRoot.replace(/\/$/,'') + '/journal', undefined, undefined)
-                        .map(x => 'journal\\'+x)
+                        .map(x => 'journal'+this.delimiter+x)
                       );
-      this.parseDirectory('\\');
+      this.parseDirectory();
     }
   }
 

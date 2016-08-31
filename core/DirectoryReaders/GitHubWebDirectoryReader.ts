@@ -7,7 +7,7 @@ class GitHubWebDirectoryReader extends SiteDirectoryReader {
   
   private lastCommitSha : string = '';
     
-  constructor(private baseUrl : string, private userAgent : string, _url : string) { super(_url); }
+  constructor(private baseUrl : string, private userAgent : string, _url : string, delimeter : string) { super(_url, delimeter); }
   
   
   private getShaAsync() : Promise<string> {
@@ -77,7 +77,7 @@ class GitHubWebDirectoryReader extends SiteDirectoryReader {
     if (this.flatList === undefined && this.dirTree === undefined) {
       this.lastCommitSha = JSON.parse(await this.getShaAsync())[0].sha;
       await this.getRepoTree(this.lastCommitSha);
-      this.parseDirectory('/');
+      this.parseDirectory();
     }
   }
   

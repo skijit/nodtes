@@ -6,29 +6,33 @@ let configs: EnvConfig[] = [
         <ILocalConfig>  {   name: 'development', 
                             layoutFile: 'main',
                             localMode: true,                            
-                            localRoot: 'C:/GitWorkspace/'
+                            localRoot: 'C:/GitWorkspace/',
+                            isRunningOnMac: false
                         } 
     ),
     new EnvConfig(
         <ILocalConfig>  {
                             name: 'development_mac',
                             layoutFile: 'main',
-                            localMode: true,
-                            localRoot: '/Users/tomskjei/Documents/GitWorkspace/'
+                            localMode: false,
+                            localRoot: '/Users/tomskjei/Documents/GitWorkspace/',
+                            isRunningOnMac: true
                         }),
     new EnvConfig(
         <ILocalConfig>  {
                             name: 'test',
                             layoutFile: 'main',
                             localMode: false,
-                            localRoot: 'C:/GitWorkspace/'
+                            localRoot: 'C:/GitWorkspace/',
+                            isRunningOnMac: false
                         }),
     new EnvConfig(
         <ILocalConfig>  {
                             name: 'production',
                             layoutFile: 'main',
                             localMode: false,
-                            localRoot: 'C:/GitWorkspace/'
+                            localRoot: 'C:/GitWorkspace/',
+                            isRunningOnMac: false
                         })
 ];
 

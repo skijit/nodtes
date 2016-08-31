@@ -6,7 +6,7 @@ abstract class SiteDirectoryReader {
   flatList: string[];
   url : string; 
   
-  constructor(_url: string) {
+  constructor(_url: string, public delimiter : string) {
     this.url = _url;
     this.dirTree = undefined;
     this.flatList = undefined;
@@ -17,7 +17,7 @@ abstract class SiteDirectoryReader {
   //abstract getDirectory() : Promise<DirTree>;
   
   
-  protected parseDirectory(delimiter : string) {
+  protected parseDirectory() {
     
     let curPtr : DirTree;
     this.dirTree =  { path: '/',
@@ -30,7 +30,7 @@ abstract class SiteDirectoryReader {
     
     for(var i = 0; i < this.flatList.length; i++) {
         curPtr = this.dirTree;
-        var segments = this.flatList[i].split(delimiter);
+        var segments = this.flatList[i].split(this.delimiter);
         for(var j = 0; j < segments.length; j++) {
             if (j === segments.length-1 && segments[j].match(/\.md$/i)) {
                 curPtr.files.push(segments[j].substring(0, segments[j].length-3));

@@ -4,6 +4,11 @@ Deployment Instructions
 ## Restoring the Project
 - Updating node packages: `npm install`
 - Updating typings: `node_modules/typings/dist/bin.js install`
+- Setting the appropriate environment in bash:
+    - `export NODE_ENV=development` (default)
+    - `export NODE_ENV=development_mac`
+    - `export NODE_ENV=production`
+- Might need to run `gulp transpile` a first time (once only) before running the default task.
 
 ## Older Notes
 - Deployment Error Workaround:

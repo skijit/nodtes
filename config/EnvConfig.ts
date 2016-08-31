@@ -6,12 +6,14 @@ export class EnvConfig {
     layoutFile: string;
     localMode: boolean;
     localRoot: string;
+    isRunningOnMac: boolean;
     
     constructor(obj : ILocalConfig) {
         this.name = obj.name;
         this.layoutFile = obj.layoutFile;
         this.localMode = obj.localMode;
         this.localRoot = obj.localRoot;
+        this.isRunningOnMac = obj.isRunningOnMac;
     }
     
     get root(): string {
@@ -47,6 +49,7 @@ export interface ILocalConfig {
     layoutFile: string;
     localMode: boolean;    
     localRoot: string;
+    isRunningOnMac: boolean;
 }
 
 export interface IAppName {

@@ -46,10 +46,11 @@ export default class ResourceResolver {
   
   
   getSiteDirectoryReader() : SiteDirectoryReader {
+    let delimeter = this.settings.isRunningOnMac ? '/' : '\\';
     if (this.settings.localMode) {
-      return new FSDirectoryReader(this.settings.localRoot, this.url);
+      return new FSDirectoryReader(this.settings.localRoot, this.url, delimeter);
     } else {
-      return new GitHubWebDirectoryReader(this.settings.gitHubAPIBaseUrl, this.settings.gitHubAPIUserAgent, this.url);
+      return new GitHubWebDirectoryReader(this.settings.gitHubAPIBaseUrl, this.settings.gitHubAPIUserAgent, this.url, delimeter);
     }
   }
   

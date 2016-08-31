@@ -48,4 +48,4 @@ gulp.task('develop', function () {
   });
 });
 
-gulp.task('default', ['transpile', 'develop']);
+gulp.task('default', ['develop']);
