@@ -1,4 +1,5 @@
-/typings
+typings/globals/**/*
+typings/modules/**/*
 *.js.map
 node_modules
 azure.err
