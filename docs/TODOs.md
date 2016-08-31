@@ -5,13 +5,13 @@ Current List of TODOs For Nodtes
   - update readme with better, more detailed description
   - better sample page
 - **Bugs**
+  - move all resources locally (e.g. mathjax, jquery, fonts, etc) to work in disconnected mode
   - nodemon multiple restarts.  should test against OSX and look more into this.
   - Handle running out of space in filehierarchy better
 - **Missing functionality**
   - Directory pages
 - **Misc**
 - **Front-End**
-  - decide whether to host fonts or hotlink...
   - set up sass
   - less vertical space between title and breadcrumb header
   - title is not perfectly centered
