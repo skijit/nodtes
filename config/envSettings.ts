@@ -5,8 +5,7 @@ let configs: EnvConfig[] = [
     new EnvConfig(
         <ILocalConfig>  {   name: 'development', 
                             layoutFile: 'main',
-                            localMode: true,
-                            markdownCssFile: 'vs-code-theme/combined.css',
+                            localMode: true,                            
                             localRoot: 'C:/GitWorkspace/'
                         } 
     ),
@@ -15,7 +14,6 @@ let configs: EnvConfig[] = [
                             name: 'development_mac',
                             layoutFile: 'main',
                             localMode: true,
-                            markdownCssFile: 'vs-code-theme/combined.css',
                             localRoot: '/Users/tomskjei/Documents/GitWorkspace/'
                         }),
     new EnvConfig(
@@ -23,7 +21,6 @@ let configs: EnvConfig[] = [
                             name: 'test',
                             layoutFile: 'main',
                             localMode: false,
-                            markdownCssFile: 'vs-code-theme/combined.css',
                             localRoot: 'C:/GitWorkspace/'
                         }),
     new EnvConfig(
@@ -31,7 +28,6 @@ let configs: EnvConfig[] = [
                             name: 'production',
                             layoutFile: 'main',
                             localMode: false,
-                            markdownCssFile: 'vs-code-theme/combined.css',
                             localRoot: 'C:/GitWorkspace/'
                         })
 ];

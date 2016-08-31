@@ -9,6 +9,7 @@ import * as bodyParser from "body-parser";
 import * as exphbs from "express-handlebars";
 import { settings, EnvConfig } from "./config/EnvSettings";
 import * as router from "./routes/index";
+import * as helpers from "./views/helpers/helpers";
 
 var app = express();
 
@@ -23,7 +24,15 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 app.engine('handlebars', exphbs({
   layoutsDir: settings.root + '/views/layouts/',
   defaultLayout: settings.layoutFile,
-  partialsDir: [settings.root +'/views/partials/']
+  partialsDir: [settings.root +'/views/partials/'],
+  helpers: {
+    scrollSpy: helpers.scrollSpy,
+    siteDirectory: helpers.siteDirectory,
+    breadCrumb: helpers.breadCrumb
+  },
+  compilerOptions: {
+    preventIndent: true
+  }
 }));
 app.set('views', settings.root + '/views'); 
 app.set('view engine', 'handlebars');
@@ -72,8 +81,7 @@ if (app.get('env') === 'development') {
     res.render('error', {
       message: err.message,
       error: err,
-      title: 'error',
-      cssTheme: settings.markdownCssFile
+      title: 'error'
     });
   });
 }
@@ -85,8 +93,7 @@ app.use((err: any, req, res, next) => {
   res.render('error', {
     message: err.message,
     error: {},
-    title: 'error',
-    cssTheme: settings.markdownCssFile
+    title: 'error'
   });
   return null;
 });

@@ -3,3 +3,7 @@
 node_modules
 azure.err
 *.publishsettings
+app.js
+core/**/*.js
+bin/target/**/*
+public/font/*
