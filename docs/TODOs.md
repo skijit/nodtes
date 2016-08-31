@@ -10,6 +10,7 @@ Current List of TODOs For Nodtes
   - Directory pages
 - **Misc**
 - **Front-End**
+  - decide whether to host fonts or hotlink...
   - set up sass
   - less vertical space between title and breadcrumb header
   - title is not perfectly centered

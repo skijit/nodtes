@@ -7,4 +7,3 @@ azure.err
 app.js
 core/**/*.js
 bin/target/**/*
-public/font/*
