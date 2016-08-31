@@ -2,6 +2,7 @@ Current List of TODOs For Nodtes
 =================
 
 - **Documentation**
+  - update readme with better, more detailed description
   - better sample page
 - **Bugs**
   - nodemon multiple restarts.  should test against OSX and look more into this.
@@ -29,7 +30,7 @@ Current List of TODOs For Nodtes
 - **Architecture**
   - Better use of 'controller' logic than in routing
 - **Build process**
-  - Update the VSBuild profile to output to bin/target
+  - Streamline Azure deployment process and update documentation as such
   - Minify CSS/Javascript
   - SAss Gulp task
   - more gulp tasks like delinting, etc.

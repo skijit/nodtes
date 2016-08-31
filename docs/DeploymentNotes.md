@@ -1,7 +1,7 @@
 Deployment Instructions
 ===================
 
-## Restoring the Project
+## Restoring the Project for Local Execution
 - Updating node packages: `npm install`
 - Updating typings: `node_modules/typings/dist/bin.js install`
 - Setting the appropriate environment in bash:
@@ -9,6 +9,19 @@ Deployment Instructions
     - `export NODE_ENV=development_mac`
     - `export NODE_ENV=production`
 - Might need to run `gulp transpile` a first time (once only) before running the default task.
+
+## Deployment to Azure App Service
+- Make sure the application is fully built and running locally.
+- Copy the following to the designated git repo:
+    bin
+    bower.json
+    iisnode.yml
+    package.json
+    README.md
+    License.md
+- Check the git status and make the appropriate commit
+- From the designated git repo, execute: `git push azure master`
+    - For setting up a designated repo for deployment, see [this](https://azure.microsoft.com/en-us/documentation/articles/app-service-web-nodejs-get-started/) article, which make use of the Azure CLI.
 
 ## Older Notes
 - Deployment Error Workaround:
