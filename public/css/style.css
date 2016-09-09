@@ -62,7 +62,19 @@ footer.page-footer {
   padding-top: 0px;
 }
 
+
 /* --- Rearrange Layout: Hide Breadcrumb on Short Screens --- */
+
+@media only screen and (min-width: 993px) {
+  .breadcrumb-container {
+    padding-left: 15px; 
+  }
+} 
+@media only screen and (max-width: 992px) {
+  .breadcrumb-container {
+    padding-left: 3px; 
+  }  
+}
 @media only screen and (max-height: 400px) {
     .breadcrumb-container {
         line-height: 110%;
@@ -144,6 +156,8 @@ div.navbar-fixed, header nav.breadcrumb {
 
 
 /* --- Fixed Header / SideNav Layout --- */
+.logo-wrapper { position: absolute; }
+
 nav .nav-wrapper {
     position: static;
     height: auto;
@@ -165,6 +179,7 @@ nav div.title {
     color: #fff;
     font-size: 2.1rem;
     text-transform: uppercase;
+    margin: 0 25px 0 25px;
 }
 #logo-container {
     color: #C5CAE9;
