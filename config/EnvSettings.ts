@@ -14,9 +14,9 @@ let configs: EnvConfig[] = [
         <ILocalConfig>  {
                             name: 'development_mac',
                             layoutFile: 'main',
-                            localMode: false,
+                            localMode: true,
                             localRoot: '/Users/tomskjei/Documents/GitWorkspace/',
-                            pathDelimeter: '\\'
+                            pathDelimeter: '/'
                         }),
     new EnvConfig(
         <ILocalConfig>  {
