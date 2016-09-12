@@ -48,7 +48,8 @@ router.get(/\/.+/, async function(req, res, next) {
             siteDirectory: sdr.dirTree, 
             appRepoUrl: settings.appRepoUrl,
             contentRepoUrl: settings.contentRepoUrl,
-            version: pjson.version
+            version: pjson.version,
+            localMode: settings.localMode
         });
     }
 });

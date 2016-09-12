@@ -2,7 +2,8 @@ Current List of TODOs For Nodtes
 =================
 
 - **Documentation**
-  - better sample page
+  - better sample page and use as a default page
+  - Better Readme
 - **Bugs**
   - nodemon multiple restarts.  should test against OSX and look more into this.
   - Handle running out of space in filehierarchy better
@@ -10,11 +11,18 @@ Current List of TODOs For Nodtes
   - Directory pages
 - **Misc**
 - **Front-End**
-  - decide whether to host fonts or hotlink...
   - set up sass
   - less vertical space between title and breadcrumb header
-  - title is not perfectly centered
+  - scrollspy padding / real-estate / scaling solution- when lots of items
 - **Back-End**
+  - configuration for a:
+    - primary local root
+    - set of secondary local roots: journal, etc.
+  - delimeter setting : get a cross platform solution so it's not configurable
+    - verify works/behavior for local and remote mode in:
+        - PC
+        - Mac
+        - Cloud
   - Use conditional view (handlebars) logic to apply the manifest container rather than in MdFile
   - redis directory caching
   - toolbar: collapse/expand all - font-resize - hide rmenu - hide lmenu
@@ -26,6 +34,7 @@ Current List of TODOs For Nodtes
   - Use a Promise.All rather than async/awaits for MdFile & SiteDirectory processing
   - more type-safety- such as with external libs
   - better error handling 
+  - Hotlink to Google Roboto font for remote mode
 - **Architecture**
   - Better use of 'controller' logic than in routing
 - **Build process**

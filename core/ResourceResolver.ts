@@ -46,7 +46,7 @@ export default class ResourceResolver {
   
   
   getSiteDirectoryReader() : SiteDirectoryReader {
-    let delimeter = this.settings.isRunningOnMac ? '/' : '\\';
+    let delimeter = this.settings.pathDelimeter;
     if (this.settings.localMode) {
       return new FSDirectoryReader(this.settings.localRoot, this.url, delimeter);
     } else {

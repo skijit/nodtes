@@ -3,6 +3,7 @@ var gulp = require('gulp'),
   plumber = require('gulp-plumber'),
   livereload = require('gulp-livereload'),
   path = require('path'),
+  del = require('del'),
   ts = require('gulp-typescript');
   
 var targetDir = './bin/target';
@@ -25,6 +26,10 @@ gulp.task('copyPackageJson', function() {
 gulp.task('copyViews', function() {
   gulp.src('./views/**/*').pipe(gulp.dest(targetDir+'/views'));
 })
+
+gulp.task('clean', function () {
+  return del(['./bin/target/**/*']);
+});
 
 gulp.task('develop', function () {
   livereload.listen();
@@ -65,5 +70,7 @@ gulp.task('develop', function () {
     this.stderr.pipe(process.stderr);
   });
 });
+
+gulp.task('fullCopy', ['copyStaticFiles', 'copyPackageJson', 'copyViews', 'transpile'])
 
 gulp.task('default', ['develop']);

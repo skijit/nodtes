@@ -16,9 +16,15 @@
   <footer class="page-footer orange lighten-1">
     {{>footer}}
   </footer>
-    
-  <script src="/js/jquery-2.1.1.min.js"></script>
-  <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+
+  {{#if localMode}}
+    <script src="/js/jquery-2.1.1.min.js"></script>
+    <script src='/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+  {{else}}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+  {{/if}}
+
   <script src="/js/materialize.js"></script>
   <script src="/js/init.js"></script>
 
