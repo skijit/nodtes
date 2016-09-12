@@ -1,0 +1,54 @@
+{
+  "name": "mathjax",
+  "version": "2.7.0-beta.0",
+  "description": "Beautiful math in all browsers. MathJax is an open-source JavaScript display engine for LaTeX, MathML, and AsciiMath notation that works in all browsers.",
+  "keywords": [
+    "math",
+    "svg",
+    "mathml",
+    "tex",
+    "latex",
+    "asciimath",
+    "browser",
+    "browser-only"
+  ],
+  "maintainers": [
+    {
+      "name": "mathjax",
+      "email": "manager@mathjax.org"
+    }
+  ],
+  "bugs": {
+    "url": "http://github.com/mathjax/MathJax/issues"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mathjax/MathJax.git"
+  },
+  "main": "./unpacked/MathJax.js",
+  "scripts": {
+    "test": "echo 'No tests here!'"
+  },
+  "gitHead": "e1810fe2a90068646a918e4ee30b110f14591d1b",
+  "homepage": "https://github.com/mathjax/MathJax#readme",
+  "_id": "mathjax@2.7.0-beta.0",
+  "_shasum": "2e52b6192e50ee3fe5aeeeaf4f438a5f9987a8ab",
+  "_from": "mathjax@latest",
+  "_npmVersion": "3.8.6",
+  "_nodeVersion": "5.12.0",
+  "_npmUser": {
+    "name": "mathjax",
+    "email": "manager@mathjax.org"
+  },
+  "dist": {
+    "shasum": "2e52b6192e50ee3fe5aeeeaf4f438a5f9987a8ab",
+    "tarball": "https://registry.npmjs.org/mathjax/-/mathjax-2.7.0-beta.0.tgz"
+  },
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/mathjax-2.7.0-beta.0.tgz_1472743397873_0.07537722145207226"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/mathjax/-/mathjax-2.7.0-beta.0.tgz"
+}

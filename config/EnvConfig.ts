@@ -6,14 +6,14 @@ export class EnvConfig {
     layoutFile: string;
     localMode: boolean;
     localRoot: string;
-    isRunningOnMac: boolean;
+    pathDelimeter : string;
     
     constructor(obj : ILocalConfig) {
         this.name = obj.name;
         this.layoutFile = obj.layoutFile;
         this.localMode = obj.localMode;
         this.localRoot = obj.localRoot;
-        this.isRunningOnMac = obj.isRunningOnMac;
+        this.pathDelimeter = obj.pathDelimeter;
     }
     
     get root(): string {
@@ -40,8 +40,7 @@ export class EnvConfig {
     get contentRepoUrl() : string {
       return globals.CONTENT_REPO_URL;
     }
-    
-    
+
 }
 
 export interface ILocalConfig {
@@ -49,7 +48,7 @@ export interface ILocalConfig {
     layoutFile: string;
     localMode: boolean;    
     localRoot: string;
-    isRunningOnMac: boolean;
+    pathDelimeter: string;
 }
 
 export interface IAppName {
