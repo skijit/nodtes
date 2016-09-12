@@ -7,7 +7,7 @@ Development Process
 - Update the code and commit
 - Git Push
 - Test Remote
-- `git flow feature finish feature-<FeatureName>`
+- `git flow feature finish <FeatureName>`
   - Merge the feature branch into the development branch
   - Assuming there are no conflicts, it will delete the feature branch
 - `git flow release start X.Y.Z`
