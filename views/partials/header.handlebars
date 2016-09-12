@@ -1,26 +1,34 @@
 <div class="navbar-fixed"> 
     <nav class="z-depth-0" role="navigation">
-          <!--hide-on-large-only-->
-        <div class="left">
-            <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full">
-                <i class="material-icons">menu</i>
-            </a>
+                
+        <!--hide-on-large-only-->
+        <div class="logo-wrapper">
+          <div class="left">
+              <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full">
+                  <i class="material-icons">menu</i>
+              </a>
+          </div>
+          
+          <div class="left super-nav-wrapper">
+              <div class="nav-wrapper hide-on-med-and-down">
+                      <a id="logo-container" href="#" class="brand-logo">
+                        <i class="lbracket material-icons">keyboard_arrow_left</i>
+                        nodtes
+                        <i class="rbracket material-icons">keyboard_arrow_right</i>
+                      </a>            
+              </div> 
+          </div>
         </div>
-        <div class="left super-nav-wrapper">
-            <div class="nav-wrapper">
-                    <a id="logo-container" href="#" class="brand-logo">
-                      <i class="lbracket material-icons">keyboard_arrow_left</i>
-                      nodtes
-                      <i class="rbracket material-icons">keyboard_arrow_right</i>
-                    </a>            
-            </div>
-            <div class="h6-font-size breadcrumb-container">
-                {{#breadCrumb breadCrumb}}  {{/breadCrumb}}
-            </div>
-        </div>
+        
         <div class="center title">
             {{{title}}}
         </div>
+                
+        <div class="left h6-font-size breadcrumb-container hide-on-small-only">
+            {{#breadCrumb breadCrumb}}  {{/breadCrumb}}
+        </div>
+        
+        
     </nav>        
 </div>
 

@@ -49,6 +49,9 @@ app.use(cookieParser());
 //Resources can be returned locally (via static) or remotely (via redirect)
 if (settings.localMode === true) {
     app.use('/resources', express.static(settings.localRoot+'notes/resources'));
+    app.use('/mathjax', express.static(settings.localRoot+'nodtes/redist/mathjax'));
+    app.use('/material-icons', express.static(settings.localRoot+'nodtes/redist/material-design-icons-3.01'));
+    app.use('/fonts', express.static(settings.localRoot+'nodtes/redist/fonts'));
 } else {
     app.get(/^\/resources\/.+/i, function(req, res) {
         var remoteReq = settings.remoteRoot + req.url;
