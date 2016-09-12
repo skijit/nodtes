@@ -5,3 +5,6 @@ ChangeLog
 - Local mode uses all local resources: no remote dependencies
 - Misc Gulpfile enhancements
 - Renamed path delimeter configuration setting
+
+## v0.0.1
+- Initial release
