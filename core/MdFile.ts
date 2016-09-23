@@ -31,7 +31,7 @@ export default class MdFile {
     
     processManifest() {
       let firstHeaderLine : number = -1;
-      if (this.fileHierarchy.length > 1) {
+      if (this.fileHierarchy.length > 0) {
         firstHeaderLine = this.fileHierarchy[0].lineNumber;
       } else {
         //if there are no headers, then the content can't have a manifest
@@ -98,11 +98,11 @@ export default class MdFile {
           headerCtr: number = 0;
           
       for(var i = 0; i < this.content.length; i++) {
-          let t = this.content[i].match(/^(\#+)\s{1}(.+)$/i);
+          let t = this.content[i].match(/^\s*(\#+)\s{1}(.+)\s*$/i);
           if (t != null) {
             
             curSec = {
-                title: t[2],
+                title: t[2].trim(),
                 level: t[1].length-1,
                 parents: [],
                 headerNumber: ++headerCtr,

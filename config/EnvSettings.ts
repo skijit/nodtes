@@ -5,9 +5,9 @@ let configs: EnvConfig[] = [
     new EnvConfig(
         <ILocalConfig>  {   name: 'development', 
                             layoutFile: 'main',
-                            localMode: false,                            
+                            localMode: true,                            
                             localRoot: 'C:/GitWorkspace/',
-                            pathDelimeter: '/'
+                            pathDelimeter: '\\'
                         } 
     ),
     new EnvConfig(
