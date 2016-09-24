@@ -118,6 +118,24 @@
             sectionToggle($("#"+$curSection.attr("data-parent")), "open");
     }
     
-  }); // end of document ready
+    $(window).on('load resize', function(){
+      var width = $(window).width();
+      var maxFontSizeRem = 2.1;
+      
+      if (width < 600) {  
+        var titleLength = $("div.title").text().trim().length;
+        var curLengthWidthRatio = titleLength/width;
+        var maxLegthWidthRatio = 18/375; //@font-size: 2.1 rem,
+        
+        if (curLengthWidthRatio > maxLegthWidthRatio ) {
+          var newFontSize = maxFontSizeRem* (maxLegthWidthRatio/curLengthWidthRatio);          
+          $("div.title").css("font-size", newFontSize+"rem");
+        }
+      } else {
+        $("div.title").css("font-size", maxFontSizeRem+"rem");
+      }
+    });
+    
+  }); 
 })(jQuery); // end of jQuery name space
 

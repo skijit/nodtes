@@ -23,6 +23,8 @@ Deployment Instructions
     - package.json
     - README.md
     - ChangeLog.md
+      - For now, remove the typings install script line.  It doesn't work on Azure.
+  - `git commit -a -m 'update'`
   - `git push azure master`
 
 - **Other notes**

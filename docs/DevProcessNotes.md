@@ -25,6 +25,7 @@ Development Process
     - Other stuff from this older releases
   ```
 - Update the version number in package.json
+- Commit and push
 - `git flow release finish X.Y.Z`
   - You will be prompted for a tag name and comments
   - Merges the release branch into master. 
