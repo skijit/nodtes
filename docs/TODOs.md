@@ -16,7 +16,6 @@ Current List of TODOs For Nodtes
 
 - **Front-End**
   - set up sass
-  - less vertical space between title and breadcrumb header
   - scrollspy padding / real-estate / scaling solution- when lots of items
 
 - **Back-End**

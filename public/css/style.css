@@ -41,7 +41,7 @@ main, footer {
         padding-left: 5px;
     }
 }
-@media only screen and (min-width: 992px) { 
+@media only screen and (min-width: 993px) { 
     div.scrollspy-container.content-container {
         padding-right: 25px;
         padding-left: 15px;
@@ -75,7 +75,7 @@ footer.page-footer {
     padding-left: 3px; 
   }  
 }
-@media only screen and (max-height: 400px) {
+@media only screen and (max-height: 450px), only screen and (max-width: 600px) {
     .breadcrumb-container {
         line-height: 110%;
         margin: 0.5rem 0 0.4rem 0;
@@ -100,7 +100,7 @@ footer.page-footer {
     }
 
 }
-@media only screen and (min-height: 400px) {
+@media only screen and (min-height: 451px) and (min-width: 601px) {
     .breadcrumb-container {
         line-height: 110%;
         margin: 0.5rem 0 0.4rem 0;   
