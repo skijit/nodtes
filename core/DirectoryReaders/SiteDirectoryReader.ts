@@ -5,11 +5,13 @@ abstract class SiteDirectoryReader {
   dirTree : DirTree;
   flatList: string[];
   url : string; 
+  curUrlIsDirectory : boolean;
   
   constructor(_url: string, public delimiter : string) {
     this.url = _url;
     this.dirTree = undefined;
     this.flatList = undefined;
+    this.curUrlIsDirectory = this.url == '/';
   }
   
   
@@ -29,6 +31,7 @@ abstract class SiteDirectoryReader {
                     } as DirTree;
     
     for(var i = 0; i < this.flatList.length; i++) {
+
         curPtr = this.dirTree;
         var segments = this.flatList[i].split(this.delimiter);
         for(var j = 0; j < segments.length; j++) {
@@ -43,6 +46,9 @@ abstract class SiteDirectoryReader {
                                             activePath: j < urlSegments.length && segments[j].toLowerCase() === urlSegments[j].toLowerCase(),
                                             reqUrl: this.url
                                         }   as DirTree;
+                if (curPtr[segments[j]].path.toLowerCase().replace(/\/?$/, '/') == this.url.toLowerCase().replace(/\/?$/, '/')) {
+                    this.curUrlIsDirectory = true;
+                }
             }
             curPtr = curPtr[segments[j]];
         }

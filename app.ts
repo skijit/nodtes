@@ -28,7 +28,8 @@ app.engine('handlebars', exphbs({
   helpers: {
     scrollSpy: helpers.scrollSpy,
     siteDirectory: helpers.siteDirectory,
-    breadCrumb: helpers.breadCrumb
+    breadCrumb: helpers.breadCrumb,
+    dirEntry: helpers.dirEntry
   },
   compilerOptions: {
     preventIndent: true
@@ -78,7 +79,8 @@ app.use((req, res, next) => {
 
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
+console.log(app.get('env'));
+if (app.get('env').match(/^development/)) {
   app.use((err: any, req, res, next) => {
     res.status(err['status'] || 500);
     res.render('error', {

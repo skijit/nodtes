@@ -11,9 +11,6 @@ Current List of TODOs For Nodtes
   - nodemon multiple restarts.  should test against OSX and look more into this.
   - Handle running out of space in filehierarchy better
 
-- **Missing functionality**
-  - Directory pages
-
 - **Front-End**
   - set up sass
   - scrollspy padding / real-estate / scaling solution- when lots of items
@@ -49,4 +46,3 @@ Current List of TODOs For Nodtes
   - Minify CSS/Javascript
   - SAss Gulp task
   - more gulp tasks like delinting, etc.
-  

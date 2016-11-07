@@ -446,3 +446,17 @@ footer div.proj-links {
   font-weight: 800;
   color: #ffffff;
 }
+
+/* ----- directory page --------- */
+div.directory-contents h5 {
+    color: #3F51B5;
+}
+div.directory-contents h5:first-child {
+    margin-top: 0.0em;
+}
+div.directory-contents ul.files, div.directory-contents ul.sub-dirs {
+    padding: 0 0 0 1rem;
+}
+div.directory-contents ul.files > li, div.directory-contents ul.sub-dirs > li {
+    list-style-type: none ;
+}
