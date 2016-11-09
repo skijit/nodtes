@@ -7,7 +7,8 @@ let configs: EnvConfig[] = [
                             layoutFile: 'main',
                             localMode: true,                            
                             localRoot: 'C:/GitWorkspace/',
-                            pathDelimeter: '\\'
+                            pathDelimeter: '\\',
+                            includeAnaytics: false
                         } 
     ),
     new EnvConfig(
@@ -16,7 +17,8 @@ let configs: EnvConfig[] = [
                             layoutFile: 'main',
                             localMode: true,
                             localRoot: '/Users/tomskjei/Documents/GitWorkspace/',
-                            pathDelimeter: '/'
+                            pathDelimeter: '/',
+                            includeAnaytics: false
                         }),
     new EnvConfig(
         <ILocalConfig>  {
@@ -24,7 +26,8 @@ let configs: EnvConfig[] = [
                             layoutFile: 'main',
                             localMode: false,
                             localRoot: 'C:/GitWorkspace/',
-                            pathDelimeter: '\\'
+                            pathDelimeter: '\\',
+                            includeAnaytics: false
                         }),
     new EnvConfig(
         <ILocalConfig>  {
@@ -32,7 +35,8 @@ let configs: EnvConfig[] = [
                             layoutFile: 'main',
                             localMode: false,
                             localRoot: 'C:/GitWorkspace/',
-                            pathDelimeter: '/'
+                            pathDelimeter: '/',
+                            includeAnaytics: true
                         })
 ];
 

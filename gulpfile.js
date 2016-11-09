@@ -18,7 +18,7 @@ gulp.task('transpile', function() {
 gulp.task('copyStaticFiles', function() {
   gulp.src('./public/**/*.{css,ico,js}').pipe(gulp.dest(targetDir+'/public'));  
 });
-
+  
 gulp.task('copyPackageJson', function() {
   gulp.src('./package.json').pipe(gulp.dest(targetDir));
 });

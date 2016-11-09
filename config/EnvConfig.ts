@@ -7,11 +7,13 @@ export class EnvConfig {
     localMode: boolean;
     localRoot: string;
     pathDelimeter : string;
+    includeAnalytics : boolean;
     
     constructor(obj : ILocalConfig) {
         this.name = obj.name;
         this.layoutFile = obj.layoutFile;
         this.localMode = obj.localMode;
+        this.includeAnalytics = obj.includeAnaytics;
         this.localRoot = obj.localRoot;
         this.pathDelimeter = obj.pathDelimeter;
     }
@@ -49,6 +51,7 @@ export interface ILocalConfig {
     localMode: boolean;    
     localRoot: string;
     pathDelimeter: string;
+    includeAnaytics: boolean;
 }
 
 export interface IAppName {

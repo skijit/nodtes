@@ -51,7 +51,8 @@ router.get(/.*/, async function(req, res, next) {
                 appRepoUrl: settings.appRepoUrl,
                 contentRepoUrl: settings.contentRepoUrl,
                 version: pjson.version,
-                localMode: settings.localMode
+                localMode: settings.localMode,
+                includeAnalytics: settings.includeAnalytics
             });
         } else {
             res.render('directory', {
@@ -64,7 +65,8 @@ router.get(/.*/, async function(req, res, next) {
                 appRepoUrl: settings.appRepoUrl,
                 contentRepoUrl: settings.contentRepoUrl,
                 version: pjson.version,
-                localMode: settings.localMode
+                localMode: settings.localMode,
+                includeAnalytics: settings.includeAnalytics
             });
         }
     }
