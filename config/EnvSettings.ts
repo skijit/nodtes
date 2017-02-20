@@ -12,6 +12,15 @@ let configs: EnvConfig[] = [
                         } 
     ),
     new EnvConfig(
+        <ILocalConfig>  {   name: 'development2', 
+                            layoutFile: 'main',
+                            localMode: true,                            
+                            localRoot: 'C:/Users/skijit/Documents/repos/',
+                            pathDelimeter: '\\',
+                            includeAnaytics: false
+                        } 
+    ),
+    new EnvConfig(
         <ILocalConfig>  {
                             name: 'development_mac',
                             layoutFile: 'main',
