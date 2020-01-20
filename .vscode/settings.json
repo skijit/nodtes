@@ -7,5 +7,11 @@
         "**/*.js": {"when": "$(basename).ts"}
     }, 
     "editor.tabSize": 2,
-    "typescript.tsdk": "./node_modules/typescript/lib"
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/e18a9405-cb72-40d5-a448-c37d81c07a58/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/nodtes2",
+    "appService.deploySubpath": ""
   }
