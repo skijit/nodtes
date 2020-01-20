@@ -10,6 +10,8 @@
         
         $('.scrollspy').scrollSpy();
         
+        $('#curYear').text(new Date().getFullYear());
+        
     });
     
     function populateSideNav() {

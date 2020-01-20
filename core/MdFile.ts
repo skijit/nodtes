@@ -97,9 +97,14 @@ export default class MdFile {
           stack : FileSegment[] = [],
           headerCtr: number = 0;
           
+      let inCodeBlock = false;
       for(var i = 0; i < this.content.length; i++) {
+          let matchResults = this.content[i].match(/\`\`\`/g);
+          if (matchResults && matchResults.length===1) {
+            inCodeBlock = !inCodeBlock;
+          }
           let t = this.content[i].match(/^\s*(\#+)\s{1}(.+)\s*$/i);
-          if (t != null) {
+          if (t != null && !inCodeBlock) {
             
             curSec = {
                 title: t[2].trim(),
