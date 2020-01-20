@@ -3,9 +3,9 @@
   "version": "0.0.3",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node bin/www",
     "typings": "typings",
-    "postinstall": "./node_modules/typings/dist/bin.js install"
+    "oldpostinstall": "node_modules/typings/dist/bin.js install"
   },
   "dependencies": {
     "body-parser": "^1.13.3",
